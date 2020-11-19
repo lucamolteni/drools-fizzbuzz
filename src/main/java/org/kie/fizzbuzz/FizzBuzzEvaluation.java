@@ -1,5 +1,7 @@
 package org.kie.fizzbuzz;
 
+import java.util.Objects;
+
 public class FizzBuzzEvaluation implements Comparable<FizzBuzzEvaluation> {
 
     private int number;
@@ -33,6 +35,24 @@ public class FizzBuzzEvaluation implements Comparable<FizzBuzzEvaluation> {
             return o.getCommand().compareTo(this.getCommand());
         }
         return compare;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FizzBuzzEvaluation that = (FizzBuzzEvaluation) o;
+        return number == that.number &&
+                Objects.equals(command, that.command);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(number, command);
     }
 
     @Override

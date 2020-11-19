@@ -10,43 +10,64 @@ global List<FizzBuzzEvaluation> allNumbers;
 rule "printNumber"
 when
     $i : Integer( )
-    not(exists(FizzBuzzEvaluation( number == $i)))
 then
-    allNumbers.add(new FizzBuzzEvaluation($i, ""));
+    insert(new FizzBuzzEvaluation($i, ""));
 end
 
 rule "fizz"
-salience 20
 when
     $i : Integer( this % 3 == 0)
-    not(exists(FizzBuzzEvaluation( number == $i)))
 then
     insert(new FizzBuzzEvaluation($i, "fizz"));
 end
 
 rule "buzz"
-salience 20
 when
     $i : Integer( this % 5 == 0)
-    not(exists(FizzBuzzEvaluation( number == $i)))
 then
     insert(new FizzBuzzEvaluation($i, "buzz"));
 end
 
 rule "fizzbuzz"
-salience 30
 when
     $i : Integer( this % 3 == 0 && this % 5 == 0)
-    not(exists(FizzBuzzEvaluation( number == $i)))
 then
     insert(new FizzBuzzEvaluation($i, "fizzbuzz"));
 end
 
-rule "collect"
+rule "collectIndex"
 when
-    $e : FizzBuzzEvaluation()
+    $f : FizzBuzzEvaluation($n: number, command == "")
+    not(exists(FizzBuzzEvaluation(number == $n, command == "fizz")))
+    not(exists(FizzBuzzEvaluation(number == $n, command == "buzz")))
+    not(exists(FizzBuzzEvaluation(number == $n, command == "fizzbuzz")))
 then
-    allNumbers.add($e);
+    allNumbers.add($f);
+end
+
+rule "collectFizz"
+when
+    $f : FizzBuzzEvaluation($n: number, command == "fizz")
+    not(exists(FizzBuzzEvaluation(number == $n, command == "fizzbuzz")))
+then
+    allNumbers.add($f);
+end
+
+rule "collectBuzz"
+when
+    $b : FizzBuzzEvaluation($n: number, command == "buzz")
+    not(exists(FizzBuzzEvaluation(number == $n, command == "fizzbuzz")))
+then
+    allNumbers.add($b);
+end
+
+rule "collectFizzBuzz"
+when
+    FizzBuzzEvaluation($number: number, command == "fizz")
+    FizzBuzzEvaluation(number == $number, command == "buzz")
+    $fb : FizzBuzzEvaluation(number == $number, command == "fizzbuzz")
+then
+    allNumbers.add($fb);
 end
 
 rule "print"
