@@ -20,15 +20,11 @@ public class FizzBuzz {
         KieServices kieServices = KieServices.Factory.get();
 
         KieContainer kContainer = kieServices.getKieClasspathContainer();
-        KieBase kieBase = kContainer.getKieBase("FizzBuzzKBase");
+        KieBase kieBase = kContainer.getKieBase();
 
         KieSession session = kieBase.newKieSession();
 
         ArrayList<FizzBuzzEvaluation> o = new ArrayList<>();
-
-        ReteDumper.dumpRete(kieBase);
-
-//        session.addEventListener(new DebugAgendaEventListener());
 
         session.setGlobal("allNumbers", o);
 
