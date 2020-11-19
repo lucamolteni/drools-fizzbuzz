@@ -1,0 +1,57 @@
+package org.kie.fizzbuzz
+
+import java.util.*
+// This is not needed as it's in the same package
+import org.kie.fizzbuzz.FizzBuzzEvaluation;
+import java.util.stream.Collectors;
+
+global List<FizzBuzzEvaluation> allNumbers;
+
+rule "printNumber"
+when
+    $i : Integer( )
+    not(exists(FizzBuzzEvaluation( number == $i)))
+then
+    allNumbers.add(new FizzBuzzEvaluation($i, ""));
+end
+
+rule "fizz"
+salience 20
+when
+    $i : Integer( this % 3 == 0)
+    not(exists(FizzBuzzEvaluation( number == $i)))
+then
+    insert(new FizzBuzzEvaluation($i, "fizz"));
+end
+
+rule "buzz"
+salience 20
+when
+    $i : Integer( this % 5 == 0)
+    not(exists(FizzBuzzEvaluation( number == $i)))
+then
+    insert(new FizzBuzzEvaluation($i, "buzz"));
+end
+
+rule "fizzbuzz"
+salience 30
+when
+    $i : Integer( this % 3 == 0 && this % 5 == 0)
+    not(exists(FizzBuzzEvaluation( number == $i)))
+then
+    insert(new FizzBuzzEvaluation($i, "fizzbuzz"));
+end
+
+rule "collect"
+when
+    $e : FizzBuzzEvaluation()
+then
+    allNumbers.add($e);
+end
+
+rule "print"
+when
+    $fz : FizzBuzzEvaluation() from allNumbers.stream().sorted().collect(Collectors.toList());
+then
+    System.out.println($fz.getNumber() + " " + $fz.getCommand());
+end
